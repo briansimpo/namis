@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "namis"
 env = environ.Env()
 
-READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
+READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=True)
 if READ_DOT_ENV_FILE:
     # OS environment variables take precedence over variables from .env
     env.read_env(str(BASE_DIR / ".env"))
@@ -45,16 +45,7 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": "localhost",
-        "PORT": "5432",
-        "NAME": "namis",
-        "USER": "namis",
-        "PASSWORD": "namis2024"
-    }
-}
+DATABASES = {"default": env.db("DATABASE_URL")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -231,11 +222,11 @@ EMAIL_BACKEND = env(
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
 
-EMAIL_HOST = env("EMAIL_HOST", default="smtp.gmail.com")
+EMAIL_HOST = "smtp.office365.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="usersupport@luanar.ac.mw")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="Bunda@19")
+EMAIL_HOST_USER = "usersupport@luanar.ac.mw"
+EMAIL_HOST_PASSWORD = "Bunda@19"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # ADMIN
@@ -279,7 +270,7 @@ if USE_TZ:
     # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-timezone
     CELERY_TIMEZONE = TIME_ZONE
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-broker_url
-CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/0")
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-result_backend
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#result-extended
@@ -332,9 +323,9 @@ SOCIALACCOUNT_FORMS = {"signup": "namis.users.forms.UserSocialSignupForm"}
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-NAMIS_API = env("NAMIS_API", default="https://namis.agriculture.gov.mw/main/api")
-NAMIS_USERNAME = env("NAMIS_USERNAME",default="jkambere")
-NAMIS_PASSWORD = env("NAMIS_PASSWORD", default="jKambere@CAD0")
+NAMIS_API = "https://namis.agriculture.gov.mw/main/api"
+NAMIS_USERNAME = "jkambere"
+NAMIS_PASSWORD = "jKambere@CAD0"
 
 
 
