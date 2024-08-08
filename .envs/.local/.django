@@ -11,4 +11,9 @@ REDIS_URL=redis://redis:6379/0
 
 # Flower
 CELERY_FLOWER_USER=namis
-CELERY_FLOWER_PASSWORD=namis@2024
+CELERY_FLOWER_PASSWORD=namis2024
+
+# Namis
+NAMIS_API = "https://namis.agriculture.gov.mw/main/api"
+NAMIS_USERNAME = "jkambere"
+NAMIS_PASSWORD = "jKambere@CAD0"
