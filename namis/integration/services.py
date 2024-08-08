@@ -10,6 +10,7 @@ from requests.auth import HTTPBasicAuth
 from datetime import datetime
 from types import SimpleNamespace
 from .util import JsonObject, to_bool
+from .emails import send_email
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,7 @@ class API:
 
     def _build(self, endpoint):
         return f"{self.api_url}/{endpoint}"
-    
+
     def post(self, endpoint, payload):
         endpoint = self._build(endpoint)
         response = requests.post(url=endpoint, json=payload, auth=self.auth, headers=self.headers)
@@ -50,7 +51,7 @@ class Namis:
     def __init__(self, record) -> None:
         self.record = record
         self.api = API()
-    
+
     def _dict_to_object(self, data):
         return json.loads(json.dumps(data), object_hook=lambda d: SimpleNamespace(**d))
 
@@ -60,7 +61,7 @@ class Namis:
 
     def _post_profile(self, entity_type, org_unit, data):
         payload = {
-            "trackedEntityType": entity_type, 
+            "trackedEntityType": entity_type,
             "orgUnit": org_unit,
             "attributes": [
                 {
@@ -113,7 +114,7 @@ class Namis:
                     "attribute": "vjeRjLGKjHV",
                     "value": str(data["Occupation"])
                 },
-                
+
                 {
                     "displayName": "HeadCondition",
                     "attribute": "aJEyk9gIxcr",
@@ -168,7 +169,7 @@ class Namis:
             return reference
         else:
             self.error = response['response']['importSummaries'][0]['conflicts'][0]['value']
-                    
+
     def _post_enrollment(self, entity_instance, org_unit):
         current_date = self._get_current_date()
 
@@ -192,78 +193,78 @@ class Namis:
             "trackedEntityInstance": entity_instance,
             "programStage": self.household_stage,
             "dataValues": [
-                { 
+                {
                     "displayName": "HouseholdSize",
-                    "dataElement": "V9ohTgE9gt6", 
-                    "value": str(data["HouseholdSize"]) 
+                    "dataElement": "V9ohTgE9gt6",
+                    "value": str(data["HouseholdSize"])
                 },
-                
-                { 
+
+                {
                     "displayName": "UnderFiveChildren",
-                    "dataElement": "LODyndrVqqy", 
-                    "value": str(data["UnderFiveChildren"]) 
+                    "dataElement": "LODyndrVqqy",
+                    "value": str(data["UnderFiveChildren"])
                 },
-                
-                { 
+
+                {
                     "displayName": "FarmingParticipants",
-                    "dataElement": "sdhYSHX6ADi", 
-                    "value": str(data["FarmingParticipants"]) 
+                    "dataElement": "sdhYSHX6ADi",
+                    "value": str(data["FarmingParticipants"])
                 },
-                
-                { 
+
+                {
                     "displayName": "Disabilities",
-                    "dataElement": "lUj8KABoecG", 
-                    "value": str(data["Disabilities"]) 
+                    "dataElement": "lUj8KABoecG",
+                    "value": str(data["Disabilities"])
                 },
-                
-                { 
+
+                {
                     "displayName": "FarmingIncome",
-                    "dataElement": "jhsAI5u7Qtz", 
-                    "value": str(data["FarmingIncome"]) 
+                    "dataElement": "jhsAI5u7Qtz",
+                    "value": str(data["FarmingIncome"])
                 },
-                
-                { 
+
+                {
                     "displayName": "OverallIncome",
-                    "dataElement": "wFBmGcv8oD5", 
-                    "value": str(data["OverallIncome"]) 
+                    "dataElement": "wFBmGcv8oD5",
+                    "value": str(data["OverallIncome"])
                 },
-                
-                { 
+
+                {
                     "displayName": "MaritalStatus",
-                    "dataElement": "cxGvtTqFZRg", 
+                    "dataElement": "cxGvtTqFZRg",
                     "value": str(data["MaritalStatus"])
                 },
-                
-                { 
+
+                {
                     "displayName": "PrimaryIncomeSource",
-                    "dataElement": "RY1Sjzog4uV", 
+                    "dataElement": "RY1Sjzog4uV",
                     "value": str(data["PrimaryIncomeSource"])
                 },
-                
-                { 
+
+                {
                     "displayName": "SpouseName",
-                    "dataElement": "gESUD9F82QZ", 
+                    "dataElement": "gESUD9F82QZ",
                     "value": str(data["SpouseName"])
                 },
-                
+
                 {
-                    "displayName": "SpouseNationalIDQRCode", 
-                    "dataElement": "f69kxpGfwar", 
+                    "displayName": "SpouseNationalIDQRCode",
+                    "dataElement": "f69kxpGfwar",
                     "value": None
                 },
-                
-                { 
+
+                {
                     "displayName": "SpouseNationalID",
-                    "dataElement": "Qh0LStKoviT", 
+                    "dataElement": "Qh0LStKoviT",
                     "value": None
                 },
-                
+
                 {
-                    "displayName": "SpouseBirthday", 
-                    "dataElement": "uE408f0Mjlv", 
+                    "displayName": "SpouseBirthday",
+                    "dataElement": "uE408f0Mjlv",
                     "value": None
                 }
-            
+
             ]
         }
 
@@ -280,45 +281,45 @@ class Namis:
             "trackedEntityInstance": entity_instance,
             "programStage": self.farming_overview_stage,
             "dataValues": [
-                { 
+                {
                     "displayName": "FarmerGroupMember",
-                    "dataElement": "QqwVUXU3hGd", 
-                    "value": to_bool(data["FarmerGroup"]) 
+                    "dataElement": "QqwVUXU3hGd",
+                    "value": to_bool(data["FarmerGroup"])
                 },
 
-                { 
+                {
                     "displayName": "FarmerGroupName",
-                    "dataElement": "YhGb4g7jTSA", 
+                    "dataElement": "YhGb4g7jTSA",
                     "value": str(data["FarmerGroupName"])
                 },
-                
+
                 {
-                    "displayName": "RentedLandSize", 
-                    "dataElement": "cpEikdJudnS", 
-                    "value": None 
+                    "displayName": "RentedLandSize",
+                    "dataElement": "cpEikdJudnS",
+                    "value": None
                 },
-                
-                { 
+
+                {
                     "displayName": "PermanentLandSize",
-                    "dataElement": "aVI6OByBS4R", 
+                    "dataElement": "aVI6OByBS4R",
                     "value": None
                 },
-                
-                { 
+
+                {
                     "displayName": "MaiFieldGPS",
-                    "dataElement": "v3Yo1rNuGwq", 
+                    "dataElement": "v3Yo1rNuGwq",
                     "value": None
                 },
-                
-                { 
+
+                {
                     "displayName": "LandLegalStatus",
-                    "dataElement": "fmUHqcHA8T7", 
+                    "dataElement": "fmUHqcHA8T7",
                     "value": None
                 },
-                
-                { 
+
+                {
                     "displayName": "TotalLandSize",
-                    "dataElement": "aNCtzVQCjK4", 
+                    "dataElement": "aNCtzVQCjK4",
                     "value": str(data["TotalLandSize"])
                 }
             ]
@@ -341,14 +342,14 @@ class Namis:
                     "dataElement": "wJlsR1WLgbO",
                     "value": to_bool(data["CreditService"])
                 },
-                
+
                 {
                     "displayName": "CreditServiceProvider",
                     "dataElement": "xy26yMuqVC8",
                     "value": str(data["CreditServiceProvider"])
                 },
-                
-                
+
+
                 {
                     "displayName": "Extension_FaceToFace",
                     "dataElement": "QXL27V3TVYU",
@@ -522,7 +523,7 @@ class Namis:
                     "value":  to_bool(data["ExtraSupport_Nutrition"])
                 }
 
-                
+
             ]
         }
         return self.api.post(self.events_endpoint, payload)
@@ -542,7 +543,7 @@ class Namis:
                     "dataElement": "r0IkPiagdvQ",
                     "value": to_bool(data["UseIrrigation"])
                 },
-                
+
                 {
                     "displayName": "IrrigationType",
                     "dataElement": "CXYfteuVgcQ",
@@ -703,7 +704,7 @@ class Namis:
                     "dataElement": "GIC4WU397A9",
                     "value": to_bool(data["Pestcontrol_TraditionalMethods"])
                 },
-               
+
                 {
                     "displayName": "Fertilizer_NPK",
                     "dataElement": "VF57Y1H90RR",
@@ -749,7 +750,7 @@ class Namis:
                     "dataElement": "UR897V0HG36",
                     "value": to_bool(data["Fertilizer_DCompound"])
                 },
-                
+
                 {
                     "displayName": "SeedMultiplication",
                     "dataElement": "VG27WiA9zd1",
@@ -857,7 +858,7 @@ class Namis:
 
     def post(self):
         org_unit = self.record["Blocks"]
-        
+
         entity_instance = self._post_profile(entity_type=self.entity_type, org_unit=org_unit, data=self.record)
 
         self._post_enrollment(entity_instance=entity_instance, org_unit=org_unit)
@@ -865,7 +866,6 @@ class Namis:
         self._post_farming_overview(entity_instance=entity_instance, org_unit=org_unit, data=self.record)
         self._post_support(entity_instance=entity_instance, org_unit=org_unit, data=self.record)
         self._post_farming_method(entity_instance=entity_instance, org_unit=org_unit, data=self.record)
-
         return entity_instance, self.error
 
 class Processor:
@@ -876,13 +876,13 @@ class Processor:
     def upload(self, filepath):
         logger.info("Process Initiated")
         with default_storage.open(filepath, mode='r') as file:
-            self._process(file)         
+            self._process(file)
         logger.info("Process Completed")
 
     def read(self, filepath):
         logger.info("Process Initiated")
         with open(filepath, mode='r', newline='') as file:
-            self._process(file)  
+            self._process(file)
         logger.info("Process Completed")
 
     def _process(self, file):
@@ -899,7 +899,8 @@ class Processor:
                 message = f"Row: {counter}, Error: {error}"
                 self._write(data=row, filepath=self.failed_file)
                 self._log(message)
-                logger.error(message)    
+                logger.error(message)
+        self._send_email(file)
 
     def _log(self, message):
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -914,3 +915,13 @@ class Processor:
             if not file_exists:
                 writer.writeheader()
             writer.writerow(data)
+
+    def _send_email(self, file_path):
+        attachments = None
+        context = {
+            'file_name': file_path.split('/')[-1],
+            'status': 'completed successfully',
+        }
+        subject = 'Data Post Completed'
+        template_name = 'integration/emails/import_complete.html'
+        send_email(subject, template_name, context=context, attachments=attachments)

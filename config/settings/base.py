@@ -222,6 +222,13 @@ EMAIL_BACKEND = env(
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
 
+EMAIL_HOST = env("EMAIL_HOST", default="smtp.gmail.com")
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL.
@@ -319,3 +326,6 @@ SOCIALACCOUNT_FORMS = {"signup": "namis.users.forms.UserSocialSignupForm"}
 NAMIS_API = env("NAMIS_API", default="https://namis.agriculture.gov.mw/main/api")
 NAMIS_USERNAME = env("NAMIS_USERNAME",default="jkambere")
 NAMIS_PASSWORD = env("NAMIS_PASSWORD", default="jKambere@CAD0")
+
+
+
