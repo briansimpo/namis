@@ -48,11 +48,11 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "HOST": env("POSTGRES_HOST"),
-        "PORT": env("POSTGRES_PORT"),
-        "NAME": env("POSTGRES_DB"),
-        "USER": env("POSTGRES_USER"),
-        "PASSWORD": env("POSTGRES_PASSWORD")
+        "HOST": env("POSTGRES_HOST", default="postgres"),
+        "PORT": env("POSTGRES_PORT", default="5432"),
+        "NAME": env("POSTGRES_DB", default="namis"),
+        "USER": env("POSTGRES_USER", default="namis"),
+        "PASSWORD": env("POSTGRES_PASSWORD", default="namis2024")
     }
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
